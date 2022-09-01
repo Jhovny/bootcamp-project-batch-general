@@ -3,7 +3,9 @@ package com.nttdata.bootcamp.batch.general.consumer;
 
 import com.nttdata.bootcamp.batch.general.domain.ClientEntity;
 import com.nttdata.bootcamp.batch.general.domain.dto.QuantityProductOpenClientRequest;
+import com.nttdata.bootcamp.batch.general.domain.service.ClientDWService;
 import com.nttdata.bootcamp.batch.general.domain.service.ClienteService;
+import com.nttdata.bootcamp.batch.general.persistence.model.entity.Client;
 import io.reactivex.rxjava3.core.Single;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,9 @@ public class KafkaStringConsumer {
     Logger logger = LoggerFactory.getLogger(KafkaStringConsumer.class);
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private ClientDWService clientDWService;
 
     @KafkaListener(topics = "TOPIC-PRODUCTOS-APERTURADO" , groupId = "group_id")
     public void consume(String message) {
@@ -30,6 +35,17 @@ public class KafkaStringConsumer {
 
                 clienteService.save(clientEntity)
                         .subscribe(s -> logger.info("Actualizar cantidad de producto "+ s.getCodeClient())) ;
+
+
+                /// Registrar en DataWhereHouse
+
+        Client clien =Client.builder()
+                .codClient(notificationEmailRequest.getCodeClient())
+                .quantityProduct(notificationEmailRequest.getQuantityProduct())
+                .build();
+
+        clientDWService.save(clien);
+
 
     }
 

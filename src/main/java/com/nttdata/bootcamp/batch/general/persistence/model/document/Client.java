@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @ToString
 @Document(collection="client")
+
 public class Client {
 
     /** Identificador del Cliente */

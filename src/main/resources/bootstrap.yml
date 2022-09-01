@@ -6,3 +6,8 @@ spring:
       uri: http://localhost:8084
       username: root
       password: "rHQPJeecA3YTdVkX"
+
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://localhost:5433/db_dw
+    password: '123456'
